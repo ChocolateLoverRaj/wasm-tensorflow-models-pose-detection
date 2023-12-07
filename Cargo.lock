@@ -194,13 +194,14 @@ checksum = "7ab9b36309365056cd639da3134bf87fa8f3d86008abf99e612384a6eecd459f"
 
 [[package]]
 name = "wasm-tensorflow-models-pose-detection"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "serde",
  "serde-wasm-bindgen",
  "strum_macros",
  "wasm-bindgen",
  "wasm-bindgen-futures",
+ "web-sys",
 ]
 
 [[package]]
