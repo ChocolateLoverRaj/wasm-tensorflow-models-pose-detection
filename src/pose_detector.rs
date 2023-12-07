@@ -1,14 +1,34 @@
-use wasm_bindgen::JsValue;
+use crate::{call_method::call_method, pose::Pose};
+use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_futures::{
-    js_sys::{Array, Promise},
+    js_sys::{Array, Object, Promise},
     JsFuture,
 };
-
-use crate::{call_method::call_method, pose::Pose};
 
 #[derive(Clone)]
 pub struct PoseDetector {
     js_value: JsValue,
+}
+
+impl JsCast for PoseDetector {
+    fn instanceof(val: &JsValue) -> bool {
+        // I'm pretty sure there is no `PoseDetector` class in JavaScript.
+        Object::instanceof(val)
+    }
+
+    fn unchecked_from_js(val: JsValue) -> Self {
+        PoseDetector { js_value: val }
+    }
+
+    fn unchecked_from_js_ref(_val: &JsValue) -> &Self {
+        panic!("unchecked_from_js_ref not implemented for PoseDetector");
+    }
+}
+
+impl AsRef<JsValue> for PoseDetector {
+    fn as_ref(&self) -> &JsValue {
+        &self.js_value
+    }
 }
 
 impl From<JsValue> for PoseDetector {
@@ -17,16 +37,23 @@ impl From<JsValue> for PoseDetector {
     }
 }
 
+impl Into<JsValue> for PoseDetector {
+    fn into(self) -> JsValue {
+        self.js_value
+    }
+}
+
 impl PoseDetector {
     pub async fn estimate_poses(
         &self,
-        image: JsValue,
-        timestamp: i32,
+        image: &JsValue,
+        timestamp: Option<i32>,
     ) -> Result<Vec<Pose>, JsValue> {
+        let inputs = Array::from_iter(vec![image, &JsValue::UNDEFINED, &timestamp.into()].iter());
         let poses = JsFuture::from(Promise::from(call_method(
             &self.js_value,
             &"estimatePoses".into(),
-            &Array::from_iter(vec![image, timestamp.into()].iter()),
+            &inputs,
         )?))
         .await?;
         let poses = Array::from(&poses)
@@ -44,11 +71,5 @@ impl PoseDetector {
 
     pub fn reset(&self) {
         call_method(&self.js_value, &"reset".into(), &Array::new()).unwrap();
-    }
-}
-
-impl Drop for PoseDetector {
-    fn drop(&mut self) {
-        self.dispose();
     }
 }

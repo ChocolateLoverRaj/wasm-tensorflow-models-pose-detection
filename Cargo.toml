@@ -1,8 +1,13 @@
 [package]
 name = "wasm-tensorflow-models-pose-detection"
+description = "Rust WASM Bindings for the npm package `@tensorflow-models/pose-detection`"
 version = "0.1.0"
 edition = "2021"
-
+repository = "https://github.com/ChocolateLoverRaj/wasm-tensorflow-models-pose-detection"
+license = "MIT"
+readme = "README.md"
+keywords = ["wasm", "tensorflow", "pose-detection"]
+exclude = ["cspell.json"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
@@ -11,6 +16,3 @@ serde-wasm-bindgen = "0.6.1"
 strum_macros = "0.25.3"
 wasm-bindgen = "0.2.89"
 wasm-bindgen-futures = "0.4.39"
-[dependencies.web-sys]
-version = "0.3.66"
-features = ["console"]

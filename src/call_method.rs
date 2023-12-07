@@ -7,6 +7,6 @@ pub fn call_method(target: &JsValue, key: &JsValue, inputs: &Array) -> Result<Js
         Some(v) => v,
         None => return Err(JsValue::undefined()),
     };
-    let output = Reflect::apply(&function, target, inputs)?;
+    let output = Reflect::apply(function, target, inputs)?;
     Ok(output)
 }

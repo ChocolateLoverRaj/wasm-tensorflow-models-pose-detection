@@ -1,33 +1,34 @@
 use serde::{Deserialize, Serialize};
+use std::fmt::Debug;
 use wasm_bindgen::JsValue;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Keypoint {
-    pub x: i32,
-    pub y: i32,
-    pub z: Option<i32>,
-    pub score: Option<i32>,
+    pub x: f64,
+    pub y: f64,
+    pub z: Option<f64>,
+    pub score: Option<f64>,
     pub name: Option<String>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct BoundingBox {
-    pub x_min: i32,
-    pub y_min: i32,
-    pub x_max: i32,
-    pub y_max: i32,
-    pub width: i32,
-    pub height: i32,
+    pub x_min: f64,
+    pub y_min: f64,
+    pub x_max: f64,
+    pub y_max: f64,
+    pub width: f64,
+    pub height: f64,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Pose {
     pub keypoints: Vec<Keypoint>,
-    pub score: Option<i32>,
+    pub score: Option<f64>,
     pub keypoints_3d: Option<Vec<Keypoint>>,
     pub bounding_box: Option<BoundingBox>,
     // TODO: segmentation
-    pub id: Option<i32>,
+    pub id: Option<f64>,
 }
 
 impl TryFrom<JsValue> for Pose {

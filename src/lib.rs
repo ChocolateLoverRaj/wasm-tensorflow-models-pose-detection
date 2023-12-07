@@ -27,10 +27,10 @@ impl ToString for BackendName {
 }
 
 pub async fn create_detector(model: Model) -> Result<PoseDetector, JsValue> {
-    let detector_js_value = JsFuture::from(bindings::create_detector(
-        &model.get_name()[..],
-        &model.get_config(),
-    ))
-    .await?;
+    let name = &model.get_name()[..];
+    let config = model.get_config();
+    let detector_js_value = JsFuture::from(bindings::create_detector(name, &config))
+        .await
+        .unwrap();
     Ok(PoseDetector::from(detector_js_value))
 }
