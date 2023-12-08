@@ -5,4 +5,7 @@ use wasm_bindgen_futures::js_sys::Promise;
 extern "C" {
     #[wasm_bindgen(js_name = createDetector)]
     pub fn create_detector(model: &str, model_config: &JsValue) -> Promise;
+
+    #[wasm_bindgen(js_name = util)]
+    pub static UTIL: JsValue;
 }

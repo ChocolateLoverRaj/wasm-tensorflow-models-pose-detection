@@ -6,6 +6,7 @@
     "keypoint",
     "keypoints",
     "Mediapipe",
-    "Tfjs"
+    "tfjs",
+    "webgl"
   ]
 }

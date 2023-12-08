@@ -2,7 +2,7 @@ use core::panic;
 use std::fmt::Display;
 
 use serde::{Serialize, Serializer};
-use strum_macros::Display;
+use strum_macros::{Display, IntoStaticStr};
 use wasm_bindgen::JsValue;
 use wasm_bindgen_futures::js_sys::{Object, Reflect};
 
@@ -196,13 +196,26 @@ pub struct MoveNetModelConfig {
     pub tracker_config: Option<TrackerConfig>,
 }
 
+#[derive(IntoStaticStr)]
 pub enum Model {
+    PoseNet,
+    BlazePose,
+    MoveNet,
+}
+impl Into<JsValue> for Model {
+    fn into(self) -> JsValue {
+        let value: &'static str = self.into();
+        value.into()
+    }
+}
+
+pub enum ModelWithConfig {
     PoseNet(Option<PoseNetModelConfig>),
     BlazePose(Option<BlazePoseModelConfig>),
     MoveNet(Option<MoveNetModelConfig>),
 }
 
-impl Model {
+impl ModelWithConfig {
     pub fn get_name(&self) -> &'static str {
         match self {
             Self::PoseNet(_) => "PoseNet",
