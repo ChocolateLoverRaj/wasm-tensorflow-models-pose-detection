@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use std::fmt::Debug;
 use wasm_bindgen::JsValue;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Keypoint {
     pub x: f64,
     pub y: f64,
@@ -11,7 +11,7 @@ pub struct Keypoint {
     pub name: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct BoundingBox {
     pub x_min: f64,
     pub y_min: f64,
@@ -21,7 +21,7 @@ pub struct BoundingBox {
     pub height: f64,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Pose {
     pub keypoints: Vec<Keypoint>,
     pub score: Option<f64>,

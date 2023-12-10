@@ -167,15 +167,33 @@ impl Display for TrackerType {
         write!(f, "{string}")
     }
 }
+impl Into<JsValue> for TrackerType {
+    fn into(self) -> JsValue {
+        self.to_string().into()
+    }
+}
+impl Serialize for TrackerType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_str(&self.to_string()[..])
+    }
+}
 
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct KeypointTrackerConfig {
     pub keypoint_confidence_threshold: i32,
     pub keypoint_falloff: Vec<i32>,
     pub min_number_of_keypoints: i32,
 }
 
+#[derive(Serialize)]
 pub struct BoundingBoxTrackerConfig;
 
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct TrackerConfig {
     pub max_tracks: i32,
     pub max_age: i32,
@@ -184,19 +202,26 @@ pub struct TrackerConfig {
     pub bounding_box_tracker_params: Option<BoundingBoxTrackerConfig>,
 }
 
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct MoveNetModelConfig {
     pub enable_smoothing: Option<bool>,
     pub model_type: Option<String>,
     // TODO: Also allow io.IOHandler
     pub model_url: Option<String>,
-    pub min_pose_score: Option<i32>,
+    pub min_pose_score: Option<f64>,
     pub multi_pose_max_dimension: Option<i32>,
     pub enable_tracking: Option<bool>,
     pub tracker_type: Option<TrackerType>,
     pub tracker_config: Option<TrackerConfig>,
 }
+impl Into<JsValue> for MoveNetModelConfig {
+    fn into(self) -> JsValue {
+        serde_wasm_bindgen::to_value(&self).unwrap()
+    }
+}
 
-#[derive(IntoStaticStr)]
+#[derive(IntoStaticStr, PartialEq, Eq, Hash)]
 pub enum Model {
     PoseNet,
     BlazePose,
@@ -226,10 +251,12 @@ impl ModelWithConfig {
 
     pub fn get_config(self) -> JsValue {
         match self {
-            Self::BlazePose(blaze_pose_model_config) => match blaze_pose_model_config {
-                Some(config) => config.into(),
-                None => JsValue::undefined(),
-            },
+            Self::BlazePose(blaze_pose_model_config) => blaze_pose_model_config
+                .map(|config| config.into())
+                .unwrap_or(JsValue::UNDEFINED),
+            Self::MoveNet(move_net_model_config) => move_net_model_config
+                .map(|config| config.into())
+                .unwrap_or(JsValue::UNDEFINED),
             _ => panic!("Not implemented. Make an issue :)"),
         }
     }
