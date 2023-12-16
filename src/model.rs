@@ -1,8 +1,9 @@
 use core::panic;
 use std::fmt::Display;
 
-use serde::{Serialize, Serializer};
-use strum_macros::{Display, IntoStaticStr};
+use enum_iterator::Sequence;
+use serde::{Deserialize, Serialize, Serializer};
+use strum_macros::{Display, EnumString, IntoStaticStr};
 use wasm_bindgen::JsValue;
 use wasm_bindgen_futures::js_sys::{Object, Reflect};
 
@@ -221,7 +222,9 @@ impl Into<JsValue> for MoveNetModelConfig {
     }
 }
 
-#[derive(IntoStaticStr, PartialEq, Eq, Hash)]
+#[derive(
+    IntoStaticStr, EnumString, PartialEq, Eq, Hash, Serialize, Deserialize, Clone, Sequence,
+)]
 pub enum Model {
     PoseNet,
     BlazePose,
